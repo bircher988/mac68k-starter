@@ -18,6 +18,8 @@ Usage:
   --out   where the screenshots go (default: out/shots)
   --rom   the Mac 128K/512K ROM (default: mac/Mac128K.ROM)
   --emu   the emulator (default: minivmac on the PATH)
+  --in-place  run on the disk images themselves, keeping what the Mac
+          writes to them (the Finder's Desktop file, folders, ...)
 
 Steps (coordinates are Mac screen pixels: x 0..511, y 0..341):
   boot [timeout=90]      wait until the menu bar is on the screen (the Finder
@@ -34,6 +36,8 @@ Steps (coordinates are Mac screen pixels: x 0..511, y 0..341):
   click [X Y]            click (at X,Y)
   dblclick [X Y]         double-click
   drag X1 Y1 X2 Y2       press at X1,Y1, move, release at X2,Y2
+  mousedown [X Y]        press the button (and keep it down: menus stay open)
+  mouseup [X Y]          release it
   key SPEC ...           press keys: a  Return  space  cmd+q  shift+a ...
                          (X keysym names; cmd = the Command key)
   hold K[,K...] S        hold keys down for S seconds (for games that poll
@@ -201,6 +205,9 @@ class Mac:
 
         disks = []
         for i, d in enumerate(self.args.disk):
+            if self.args.in_place:
+                disks.append(os.path.abspath(d))
+                continue
             copy = os.path.join(self.tmp, f"{i}_{os.path.basename(d)}")
             shutil.copyfile(d, copy)
             disks.append(copy)
@@ -302,7 +309,7 @@ class Mac:
         verb, args = words[0], [w for w in words[1:] if "=" not in w]
         kw = dict(w.split("=", 1) for w in words[1:] if "=" in w)
         xy = (int(args[0]), int(args[1])) if len(args) >= 2 and verb in (
-            "move", "click", "dblclick") else None
+            "move", "click", "dblclick", "mousedown", "mouseup") else None
         if verb == "boot":
             end = time.time() + float(kw.get("timeout", 90))
             while not self.menubar(self.screen()):
@@ -338,6 +345,10 @@ class Mac:
             self.click(0.06)
             time.sleep(0.1)
             self.click(0.06)
+        elif verb in ("mousedown", "mouseup"):
+            self.goto(xy)
+            self.x.button(verb == "mousedown")
+            time.sleep(0.1)
         elif verb == "drag":
             x1, y1, x2, y2 = (int(v) for v in args[:4])
             self.goto((x1, y1))
@@ -387,12 +398,14 @@ class Mac:
 
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap = argparse.ArgumentParser(description=__doc__, usage=argparse.SUPPRESS,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("steps", nargs="?", default="boot; shot screen")
     ap.add_argument("--disk", action="append")
     ap.add_argument("--out", default=os.path.join(ROOT, "out", "shots"))
     ap.add_argument("--rom", default=os.path.join(ROOT, "mac", "Mac128K.ROM"))
     ap.add_argument("--emu", default=shutil.which("minivmac") or "minivmac")
+    ap.add_argument("--in-place", action="store_true")
     args = ap.parse_args()
     args.disk = args.disk or [os.path.join(ROOT, "out", "Test.dsk")]
     steps = args.steps

@@ -8,9 +8,10 @@ mac68k-asm, put on disk images with mac68k-disk, tested headless in Mini vMac.
 - A program is four text files in `src/`: `NAME.Asm` (code), `NAME.Link` (modules),
   `NAME.R` (resources: windows, menus, ...) and `NAME.Job` (ties them together).
   A new program starts as a copy of the Hello files with every "Hello" renamed.
-- Build: `./build.sh NAME` -> `out/NAME.bin`, `out/Programs.dsk` (startup floppy: the
-  system disk from mac/ plus every program built so far, boots into the Finder) and
-  `out/Test.dsk` (the same, but boots straight into NAME). `./build.sh all` builds
+- Build: `./build.sh NAME` -> `out/NAME.bin`, `out/Programs.dsk` (startup floppy
+  "Programs": the system files from mac/System.dsk in a System Folder plus every
+  program built so far, boots into the Finder) and `out/Test.dsk` (the same, but
+  boots straight into NAME). `./build.sh all` builds
   every program in src/ onto a fresh Programs.dsk. A failed build exits with status 1:
   check it, never filter warnings away.
 - Assembler manual: `/usr/local/share/doc/mac68k-asm/README.md` (dialect, directives,
@@ -33,6 +34,17 @@ mac68k-asm, put on disk images with mac68k-disk, tested headless in Mini vMac.
 - The QuickDraw globals are set up with `PEA -4(A5)` / `_InitGraf`; the standard arrow
   cursor is then at `arrow-4(A5)` (`QDArrow EQU arrow-4`, then `PEA QDArrow(A5)` /
   `_SetCursor`). Call `_InitCursor` only once, at start-up.
+
+## Icons
+Every program gets its own icon - see `src/Hello.R`:
+- a creator code of its own, 4 characters, in the header line (`APPLHELO`, never `????`),
+- a signature resource of that type, ID 0 (`Type HELO = GNRL` / `,0` / `.P` / text;
+  `= STR` does not work in this resource compiler),
+- `ICN#` 128: 32 rows of icon bits, then 32 rows of mask (the filled silhouette), as hex,
+- `FREF` 128 (type `APPL`, local icon 0) and `BNDL` 128 (owner + ID 0, `ICN#` 0 -> 128,
+  `FREF` 0 -> 128). With a `BNDL` the build sets the Finder's hasBundle flag.
+Draw the icon with a small script (rows of `.` and `X` -> hex) and check it in the
+Finder: `tools/macemu.py --disk out/Programs.dsk "boot; dblclick 470 50; wait 2; shot finder"`.
 
 ## Assembler rules that bite
 - `DS` variables live in the A5 globals area, not in the code. Read them as `Var`,

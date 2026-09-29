@@ -6,10 +6,11 @@
 #
 # Results in out/:
 #   NAME.bin       the application (MacBinary)
-#   Programs.dsk   400K floppy with every program built so far. With
-#                  mac/System.dsk it is a startup disk: the system disk plus
-#                  the programs, booting into the Finder - start Mini vMac
-#                  with it, or write it to a floppy for a real Mac.
+#   Programs.dsk   400K floppy "Programs" with every program built so far.
+#                  With mac/System.dsk it is a startup disk: the system files
+#                  in a System Folder plus the programs, booting into the
+#                  Finder - start Mini vMac with it, or write it to a floppy
+#                  for a real Mac (tools/startdisk.py).
 #   Test.dsk       only with mac/System.dsk: Programs.dsk set up to boot
 #                  straight into NAME (for tools/macemu.py)
 set -euo pipefail
@@ -29,18 +30,20 @@ fi
 mac68k-asm build "src/$NAME.Job" -o out
 [ -f "out/$NAME.bin" ] || { echo "build.sh: out/$NAME.bin was not made" >&2; exit 1; }
 
-if [ ! -f out/Programs.dsk ]; then
-    if [ -f mac/System.dsk ]; then
-        cp mac/System.dsk out/Programs.dsk
-    else
-        mac68k-disk new out/Programs.dsk --name Programs
-    fi
-fi
-mac68k-disk add out/Programs.dsk "out/$NAME.bin" -f
+# every application built so far (out/ also holds the linker's .code.bin files)
+apps=()
+for bin in out/*.bin; do
+    [ "$(dd if="$bin" bs=1 skip=65 count=4 status=none)" = APPL ] && apps+=("$bin")
+done
 
 if [ -f mac/System.dsk ]; then
+    tools/startdisk.py out/Programs.dsk --system mac/System.dsk --name Programs "${apps[@]}" >/dev/null
     cp out/Programs.dsk out/Test.dsk
     mac68k-disk startup out/Test.dsk "$NAME"
+else
+    rm -f out/Programs.dsk
+    mac68k-disk new out/Programs.dsk --name Programs
+    mac68k-disk add out/Programs.dsk "${apps[@]}"
 fi
 
 mac68k-disk ls -l out/Programs.dsk
