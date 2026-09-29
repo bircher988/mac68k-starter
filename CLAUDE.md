@@ -11,8 +11,8 @@ mac68k-asm, put on disk images with mac68k-disk, tested headless in Mini vMac.
 - Build: `./build.sh NAME` -> `out/NAME.bin`, `out/Apps.dsk` (400K floppy with all
   programs) and `out/Test.dsk` (system disk that boots straight into NAME). A failed
   build exits with status 1: check it, never filter warnings away.
-- Assembler manual: `/usr/share/doc/mac68k-asm/README.md` (dialect, directives, `.R`
-  syntax). Include files: `/usr/share/mac68k-asm/inc/` (Traps.D, ToolEqu.D,
+- Assembler manual: `/usr/local/share/doc/mac68k-asm/README.md` (dialect, directives,
+  `.R` syntax). Include files: `/usr/share/mac68k-asm/inc/` (Traps.D, ToolEqu.D,
   QuickEqu.D, SysEqu.D, ...) - grep them for trap names and equates.
 - Disk images: `mac68k-disk help`.
 - Test: `tools/macemu.py "boot; shot start; click 256 171; wait 1; shot after"` boots

@@ -28,6 +28,12 @@ apt-get update -q || true
 apt-get install -y -q ./mac68k-asm_${VERSION}_$ARCH.deb ./mac68k-disk_${VERSION}_$ARCH.deb \
     build-essential git libx11-dev libxtst6 xvfb xdotool
 
+# the assembler manual: Ubuntu's cloud image leaves /usr/share/doc out of every
+# package, so keep a copy where CLAUDE.md looks for it
+mkdir -p /usr/local/share/doc/mac68k-asm
+curl -fsSL "https://raw.githubusercontent.com/bircher988/mac68k-asm/v$VERSION/README.md" \
+    -o /usr/local/share/doc/mac68k-asm/README.md
+
 # Mini vMac: Mac 128K board with 512 KB RAM = Macintosh 512K, real speed (1x),
 # no sound (the cloud machine has no audio device)
 rm -rf minivmac
