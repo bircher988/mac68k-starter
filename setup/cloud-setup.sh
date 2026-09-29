@@ -16,7 +16,7 @@
 set -euo pipefail
 
 ARCH=$(dpkg --print-architecture)
-VERSION=1.1
+VERSION=1.2
 cd /tmp
 
 for tool in mac68k-asm mac68k-disk; do
