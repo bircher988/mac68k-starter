@@ -15,5 +15,9 @@ On github.com: open this folder in your (private) repository, then
 git on your own machine, so they don't end up in a public repository by accident;
 an upload on github.com is committed anyway.)
 
-Without these files everything else still works: `./build.sh` makes the program and
-the floppy image `out/Apps.dsk` - run it in your own emulator or on a real Mac.
+The floppy you get from Claude, `Programs.dsk`, is a copy of your system disk with
+your programs added - keep the artifact it comes on private, too.
+
+Without these files everything else still works: `./build.sh` makes the program and a
+floppy image `out/Programs.dsk` with just the programs - open it in your own emulator
+next to a system disk, or on a real Mac.

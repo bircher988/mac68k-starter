@@ -8,9 +8,11 @@ mac68k-asm, put on disk images with mac68k-disk, tested headless in Mini vMac.
 - A program is four text files in `src/`: `NAME.Asm` (code), `NAME.Link` (modules),
   `NAME.R` (resources: windows, menus, ...) and `NAME.Job` (ties them together).
   A new program starts as a copy of the Hello files with every "Hello" renamed.
-- Build: `./build.sh NAME` -> `out/NAME.bin`, `out/Apps.dsk` (400K floppy with all
-  programs) and `out/Test.dsk` (system disk that boots straight into NAME). A failed
-  build exits with status 1: check it, never filter warnings away.
+- Build: `./build.sh NAME` -> `out/NAME.bin`, `out/Programs.dsk` (startup floppy: the
+  system disk from mac/ plus every program built so far, boots into the Finder) and
+  `out/Test.dsk` (the same, but boots straight into NAME). `./build.sh all` builds
+  every program in src/ onto a fresh Programs.dsk. A failed build exits with status 1:
+  check it, never filter warnings away.
 - Assembler manual: `/usr/local/share/doc/mac68k-asm/README.md` (dialect, directives,
   `.R` syntax). Include files: `/usr/share/mac68k-asm/inc/` (Traps.D, ToolEqu.D,
   QuickEqu.D, SysEqu.D, ...) - grep them for trap names and equates.
@@ -52,7 +54,13 @@ mac68k-asm, put on disk images with mac68k-disk, tested headless in Mini vMac.
 
 ## Working style
 - Small steps: build, test in the emulator, look at the screenshot, then go on.
-- Commit after every working step with a short message.
-- Before you finish: `./build.sh NAME` once more, copy `out/Apps.dsk` to `disk/Apps.dsk`
-  and the final screenshot to `shots/NAME.png` (both folders are committed, out/ is
-  not), commit, and say in one line what the program does and how to use it.
+- Commit the source after every working step with a short message (out/ is not
+  committed).
+
+## Handing over the disk
+When a program works, and whenever the user asks for the disk: `./build.sh all`, then
+publish a Claude artifact - a small page with the program's screenshot, the list of
+programs and a download button for the disk. `.dsk` is not an allowed download type:
+put `out/Programs.dsk` into `Programs.zip` and offer that. The disk contains Apple's
+System from mac/: leave the artifact private. Tell the user in one line how to run it:
+unzip, then open Programs.dsk with Mini vMac (Macintosh 512K, their own ROM).

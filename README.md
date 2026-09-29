@@ -18,20 +18,24 @@ your own Linux machine.
 2. Upload `Mac128K.ROM` (from your own Mac) and a System 3.x startup disk as
    `System.dsk` into the `mac/` folder - see [mac/README.md](mac/README.md). Without them
    Claude can build but not test.
-3. On [claude.ai/code](https://claude.ai/code): connect GitHub, then open the environment
-   menu -> *Add environment*: name it `mac68k`, network access *Trusted*, and paste
-   the contents of [`setup/cloud-setup.sh`](setup/cloud-setup.sh) into
-   **Setup script**.
-4. Select your repository and the `mac68k` environment, and ask for a program, e.g.
+3. Give the [Claude GitHub App](https://github.com/apps/claude) access to the new
+   repository (*Configure* -> *Only select repositories*). A private repository only
+   shows up in claude.ai/code after that.
+4. On [claude.ai/code](https://claude.ai/code): open the environment menu (the cloud
+   above the message box) -> *Cloud* -> *Add cloud environment*: name it `mac68k`,
+   network access *Trusted*, and paste the contents of
+   [`setup/cloud-setup.sh`](setup/cloud-setup.sh) into **Setup script**.
+5. Select your repository and the `mac68k` environment, and ask for a program, e.g.
    *"Write a program that draws a bouncing ball. Quit on a click."*
 
-Claude builds it, boots it in the emulator, looks at the screenshots and pushes a branch
-with `disk/Apps.dsk` - a floppy image for your emulator or a real Mac.
+Claude builds it, boots it in the emulator, looks at the screenshots, and hands you a
+startup floppy - your system disk plus the program - as a download on a (private) Claude
+artifact. Unzip it and open `Programs.dsk` with Mini vMac, or write it to a real floppy.
 
 ## On your own machine (Debian/Ubuntu)
 
     sudo bash setup/cloud-setup.sh
-    ./build.sh                      # builds src/Hello.* -> out/Apps.dsk, out/Test.dsk
+    ./build.sh                      # builds src/Hello.* -> out/Programs.dsk, out/Test.dsk
     tools/macemu.py "boot; shot start"
 
 ## Files
@@ -43,7 +47,6 @@ with `disk/Apps.dsk` - a floppy image for your emulator or a real Mac.
 | `tools/macemu.py` | run the Mac headless, click and type, take screenshots |
 | `setup/cloud-setup.sh` | install everything (cloud environment or your machine) |
 | `mac/` | your ROM and system disk (private repositories only) |
-| `disk/`, `shots/` | the finished floppy image and screenshots |
 
 ## Licence
 
