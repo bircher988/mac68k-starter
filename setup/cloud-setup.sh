@@ -22,7 +22,9 @@ cd /tmp
 for tool in mac68k-asm mac68k-disk; do
     curl -fsSLO "https://github.com/bircher988/$tool/releases/download/v$VERSION/${tool}_${VERSION}_$ARCH.deb"
 done
-apt-get update -q
+# the cloud image lists some package sources (PPAs) that the "Trusted" network
+# level blocks: their errors don't matter, the Ubuntu archive is reachable
+apt-get update -q || true
 apt-get install -y -q ./mac68k-asm_${VERSION}_$ARCH.deb ./mac68k-disk_${VERSION}_$ARCH.deb \
     build-essential git libx11-dev libxtst6 xvfb xdotool
 
