@@ -70,9 +70,13 @@ Finder: `tools/macemu.py --disk out/Programs.dsk "boot; dblclick 470 50; wait 2;
   committed).
 
 ## Handing over the disk
-When a program works, and whenever the user asks for the disk: `./build.sh all`, then
-publish a Claude artifact - a small page with the program's screenshot, the list of
-programs and a download button for the disk. `.dsk` is not an allowed download type:
-put `out/Programs.dsk` into `Programs.zip` and offer that. The disk contains Apple's
-System from mac/: leave the artifact private. Tell the user in one line how to run it:
-unzip, then open Programs.dsk with Mini vMac (Macintosh 512K, their own ROM).
+When a program works, and whenever the user asks for the disk:
+- Show the user the screenshot of the running program (send the PNG, so that it appears
+  in the conversation), plus one line on what it does and how to use it.
+- `./build.sh all`, then publish a Claude artifact: a small page with that screenshot,
+  the list of programs and a download button. `.dsk` is not an allowed download type and
+  the page cannot carry a separate .zip file: zip `out/Programs.dsk` into `Programs.zip`,
+  embed it in the page as base64 and save it through the download button.
+- The disk contains Apple's System from mac/: leave the artifact private. Tell the user
+  how to run it: unzip, then open Programs.dsk with Mini vMac (Macintosh 512K, their
+  own ROM).
