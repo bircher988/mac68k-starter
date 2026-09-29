@@ -10,7 +10,7 @@
 #                  With mac/System.dsk it is a startup disk: the system files
 #                  in a System Folder plus the programs, booting into the
 #                  Finder - start Mini vMac with it, or write it to a floppy
-#                  for a real Mac (tools/startdisk.py).
+#                  for a real Mac.
 #   Test.dsk       only with mac/System.dsk: Programs.dsk set up to boot
 #                  straight into NAME (for tools/macemu.py)
 set -euo pipefail
@@ -36,14 +36,16 @@ for bin in out/*.bin; do
     [ "$(dd if="$bin" bs=1 skip=65 count=4 status=none)" = APPL ] && apps+=("$bin")
 done
 
+rm -f out/Programs.dsk out/Test.dsk
 if [ -f mac/System.dsk ]; then
-    tools/startdisk.py out/Programs.dsk --system mac/System.dsk --name Programs "${apps[@]}" >/dev/null
+    mac68k-disk new out/Programs.dsk --system mac/System.dsk
+else
+    mac68k-disk new out/Programs.dsk
+fi
+mac68k-disk add out/Programs.dsk "${apps[@]}"
+if [ -f mac/System.dsk ]; then
     cp out/Programs.dsk out/Test.dsk
     mac68k-disk startup out/Test.dsk "$NAME"
-else
-    rm -f out/Programs.dsk
-    mac68k-disk new out/Programs.dsk --name Programs
-    mac68k-disk add out/Programs.dsk "${apps[@]}"
 fi
 
-mac68k-disk ls -l out/Programs.dsk
+mac68k-disk ls -l -R out/Programs.dsk

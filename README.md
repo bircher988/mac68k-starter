@@ -45,7 +45,6 @@ artifact. Unzip it and open `Programs.dsk` with Mini vMac, or write it to a real
 | `src/` | the programs: `NAME.Asm`, `NAME.Link`, `NAME.R`, `NAME.Job` |
 | `build.sh` | build one program and put it on disk images |
 | `tools/macemu.py` | run the Mac headless, click and type, take screenshots |
-| `tools/startdisk.py` | a startup floppy: System Folder (a Finder folder on MFS) + programs |
 | `setup/cloud-setup.sh` | install everything (cloud environment or your machine) |
 | `mac/` | your ROM and system disk (private repositories only) |
 

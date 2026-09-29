@@ -9,8 +9,8 @@ mac68k-asm, put on disk images with mac68k-disk, tested headless in Mini vMac.
   `NAME.R` (resources: windows, menus, ...) and `NAME.Job` (ties them together).
   A new program starts as a copy of the Hello files with every "Hello" renamed.
 - Build: `./build.sh NAME` -> `out/NAME.bin`, `out/Programs.dsk` (startup floppy
-  "Programs": the system files from mac/System.dsk in a System Folder plus every
-  program built so far, boots into the Finder) and `out/Test.dsk` (the same, but
+  "Programs": a System Folder with the system files of mac/System.dsk, plus every
+  program built so far; boots into the Finder) and `out/Test.dsk` (the same, but
   boots straight into NAME). `./build.sh all` builds
   every program in src/ onto a fresh Programs.dsk. A failed build exits with status 1:
   check it, never filter warnings away.
@@ -38,11 +38,11 @@ mac68k-asm, put on disk images with mac68k-disk, tested headless in Mini vMac.
 ## Icons
 Every program gets its own icon - see `src/Hello.R`:
 - a creator code of its own, 4 characters, in the header line (`APPLHELO`, never `????`),
-- a signature resource of that type, ID 0 (`Type HELO = GNRL` / `,0` / `.P` / text;
-  `= STR` does not work in this resource compiler),
+- a signature resource of that type, ID 0 (`Type HELO = STR` / `,0` / `Hello 1.0`),
 - `ICN#` 128: 32 rows of icon bits, then 32 rows of mask (the filled silhouette), as hex,
-- `FREF` 128 (type `APPL`, local icon 0) and `BNDL` 128 (owner + ID 0, `ICN#` 0 -> 128,
-  `FREF` 0 -> 128). With a `BNDL` the build sets the Finder's hasBundle flag.
+- `FREF` 128 (`APPL 0`: applications use local icon 0) and `BNDL` 128 (owner + ID 0,
+  `ICN#` 0 -> 128, `FREF` 0 -> 128). With a `BNDL` the build sets the Finder's
+  hasBundle flag.
 Draw the icon with a small script (rows of `.` and `X` -> hex) and check it in the
 Finder: `tools/macemu.py --disk out/Programs.dsk "boot; dblclick 470 50; wait 2; shot finder"`.
 

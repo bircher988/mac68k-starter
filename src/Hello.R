@@ -13,9 +13,8 @@ Visible NoGoAway
 0
 
 * signature resource: type = the creator code, ID 0
-Type HELO = GNRL
+Type HELO = STR
   ,0
-.P
 Hello 1.0
 
 * the icon: 32x32 bits, then the 32x32 mask (the filled silhouette)
@@ -40,14 +39,9 @@ Type ICN# = GNRL
 00000000 00000000 00000000 00000000
 
 * file reference: files of type APPL use the icon with local ID 0
-Type FREF = GNRL
+Type FREF
   ,128
-.S
-APPL
-.I
-0
-.B
-0
+APPL 0
 
 * bundle: owner HELO 0; local icon 0 = ICN# 128, local FREF 0 = FREF 128
 Type BNDL
