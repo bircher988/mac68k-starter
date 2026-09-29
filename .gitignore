@@ -1,0 +1,7 @@
+out/
+# Apple's ROM and system software: only ever in a PRIVATE repository.
+# (Files uploaded on github.com are committed anyway - see mac/README.md.)
+mac/*.ROM
+mac/*.rom
+mac/*.dsk
+__pycache__/
